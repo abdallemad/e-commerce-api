@@ -4,9 +4,7 @@ function createJWT({data}){
   const token = jwt.sign(data,process.env.JWT_SECRET,{expiresIn:process.env.JWT_LIFETIME})
   return token
 }
-function isTokenValid({token}){
-  return jwt.verify(token,process.env.JWT_SECRET)
-}
+const isTokenValid = ({token})=> jwt.verify(token,process.env.JWT_SECRET)
 
 function attachCookieToResponse({res,data}){
   const token = createJWT({data});

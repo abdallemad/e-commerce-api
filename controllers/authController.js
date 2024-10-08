@@ -1,8 +1,7 @@
 const User = require('../models/User');
 const {StatusCodes} = require('http-status-codes')
 const CustomError = require('../errors')
-const {attachCookieToResponse} = require('../utils')
-
+const {attachCookieToResponse,createTokenUser} = require('../utils')
 const register = async (req,res)=>{
   const {email,name,password} = req.body;
   // checking for if the email is already existing
@@ -14,7 +13,7 @@ const register = async (req,res)=>{
   // create the user and send it
   const user = await User.create({email,name,password,role});
   // create token.
-  const tokenUser = {name:user.name,id:user._id,role:user.role};
+  const tokenUser = createTokenUser(user);
   attachCookieToResponse({data:tokenUser,res:res})
 
   res.status(StatusCodes.CREATED).json({user:tokenUser})
@@ -25,9 +24,8 @@ const login = async(req,res)=>{
   const user = await User.findOne({email});
   if(!user) throw new CustomError.UnauthenticatedError('Invalid email.');
   const isCorrect =await user.comparePassword(password)
-  console.log(isCorrect)
   if(!isCorrect) throw new CustomError.UnauthenticatedError('the password is not correct');
-  const tokenUser = {name:user.name,id:user._id,role:user.role};
+  const tokenUser = createTokenUser(user);
   attachCookieToResponse({res:res,data:tokenUser})
   res.status(StatusCodes.CREATED).json({msg:'user logged in.'});
 }
