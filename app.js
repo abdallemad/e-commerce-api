@@ -10,6 +10,7 @@ const morgan = require('morgan');
 const cookieParser = require('cookie-parser')
 const cors = require('cors')
 const fileUpload = require('express-fileupload');
+const cloudinary = require('cloudinary').v2
 //middle wares
 const notFound = require('./middleware/not-found');
 const errorHandler = require('./middleware/error-handler');
@@ -25,7 +26,15 @@ app.use(express.json());
 app.use(cookieParser(process.env.JWT_SECRET))
 app.use(cors());
 app.use(express.static('./public'))
-app.use(fileUpload())
+app.use(fileUpload({
+  
+}))
+
+cloudinary.config({
+  api_key:process.env.CLOUDINARY_API_KEY,
+  cloud_name:process.env.CLOUDINARY_CLOUD_NAME,
+  api_secret:process.env.CLOUDINARY_API_SECRET,
+})
 // routes
 app.use('/api/v1/auth',authRoute);
 app.use('/api/v1/users', userRouter);

@@ -3,6 +3,7 @@ const {StatusCodes} = require('http-status-codes');
 const CustomErrors = require('../errors')
 const {checkPermission} = require('../utils');
 const Product = require('../models/Product');
+const User = require('../models/User')
 
 const createReview = async(req,res)=>{
   const {product:productId} = req.body
@@ -47,8 +48,9 @@ const updateReview = async (req,res)=>{
 const deleteReview = async(req,res)=>{
   const {id:reviewId} = req.params
   const review = await Review.findById(reviewId);
+  if(!review) 
+    throw new CustomErrors.NotFoundError(`there is no review match this id: ${reviewId}`)
   checkPermission(req.user,review.user)
-  if(!review) throw new CustomErrors.NotFoundError(`there is no review match this id: ${reviewId}`)
   
   await review.remove()
   res.status(StatusCodes.OK).json({msg:'review deleted'});
@@ -58,6 +60,14 @@ const getAllProductReviews = async(req,res)=>{
   const reviews = await Review.find({product:id})
   res.status(StatusCodes.OK).json({reviews,count:reviews.length});
 }
+const getAllUserReviews = async (req,res)=>{
+  const {id} = req.params;
+  const user = await User.findOne({_id:id});
+  if(!user) throw new CustomErrors.NotFoundError(`there is no user match this id: ${id}`)
+  checkPermission(req.user,id)
+  const reviews = await Review.find({user:user._id})
+  res.status(StatusCodes.OK).json({reviews})
+}
 
 module.exports = {
   createReview,
@@ -65,5 +75,6 @@ module.exports = {
   getSingleReview,
   updateReview,
   deleteReview,
-  getAllProductReviews
+  getAllProductReviews,
+  getAllUserReviews
 }

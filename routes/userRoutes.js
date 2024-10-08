@@ -8,7 +8,9 @@ const {
   updateUser,
   updateUserPassword
 } = require('../controllers/userController');
-
+const {
+  getAllUserReviews
+} = require('../controllers/reviewController')
 
 router
   .route('/')
@@ -28,5 +30,9 @@ router
 router
   .route('/:id')
   .get(authenticateUser, getSingleUsers);
+
+router
+  .route('/:id/reviews')
+  .get(authenticateUser, getAllUserReviews)
 
 module.exports = router

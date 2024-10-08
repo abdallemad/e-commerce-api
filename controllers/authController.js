@@ -27,7 +27,7 @@ const login = async(req,res)=>{
   if(!isCorrect) throw new CustomError.UnauthenticatedError('the password is not correct');
   const tokenUser = createTokenUser(user);
   attachCookieToResponse({res:res,data:tokenUser})
-  res.status(StatusCodes.CREATED).json({msg:'user logged in.'});
+  res.status(StatusCodes.OK).json({msg:'user logged in.'});
 }
 
 const logout = async (req,res)=>{
