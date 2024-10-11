@@ -20,6 +20,8 @@ const authRoute = require('./routes/authRoutes');
 const userRouter = require('./routes/userRoutes')
 const productRouter = require('./routes/productRoute');
 const reviewRouter = require('./routes/reviewRoute');
+const orderRouter = require('./routes/orderRoute')
+
 // static middle ware
 app.use(morgan('tiny'))
 app.use(express.json());
@@ -40,6 +42,7 @@ app.use('/api/v1/auth',authRoute);
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/products', productRouter);
 app.use('/api/v1/reviews', reviewRouter);
+app.use('/api/v1/orders',orderRouter);
 
 app.get('/api/v1',(req,res)=>{
   console.log(req.signedCookies.token);
